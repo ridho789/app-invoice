@@ -70,7 +70,7 @@ class ShipmentController extends Controller
         ->orderByRaw('tbl_sea_shipment.is_printed = false DESC')
         ->orderBy('tbl_companies.id_company')
         ->orderBy('tbl_sea_shipment.etd')
-        ->get();
+        ->paginate(50);
     
         $customer = Customer::pluck('name', 'id_customer');
         $shipper = Shipper::pluck('name', 'id_shipper');

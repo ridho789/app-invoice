@@ -117,6 +117,27 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="mt-4 mx-3 d-flex justify-content-end">
+                        <ul class="pagination pagination-sm pagination-gutter">
+                            <li class="page-item page-indicator {{ $allSeaShipment->onFirstPage() ? 'disabled' : '' }}">
+                                <a class="page-link d-flex align-items-center" href="{{ $allSeaShipment->previousPageUrl() }}" aria-label="Previous">
+                                    <i class="fa fa-angle-left me-1"></i>
+                                </a>
+                            </li>
+
+                            @for ($i = 1; $i <= $allSeaShipment->lastPage(); $i++)
+                                <li class="page-item {{ $allSeaShipment->currentPage() == $i ? 'active' : '' }}">
+                                    <a class="page-link" href="{{ $allSeaShipment->url($i) }}">{{ $i }}</a>
+                                </li>
+                            @endfor
+
+                            <li class="page-item page-indicator {{ $allSeaShipment->hasMorePages() ? '' : 'disabled' }}">
+                                <a class="page-link d-flex align-items-center" href="{{ $allSeaShipment->nextPageUrl() }}" aria-label="Next">
+                                    <i class="fa fa-angle-right ms-1"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
