@@ -67,6 +67,7 @@ class ShipmentController extends Controller
         )
         ->leftJoin('tbl_customers', 'tbl_sea_shipment.id_customer', '=', 'tbl_customers.id_customer')
         ->leftJoin('tbl_companies', 'tbl_customers.id_company', '=', 'tbl_companies.id_company')
+        ->orderByRaw('tbl_sea_shipment.is_printed = false DESC')
         ->orderBy('tbl_companies.id_company')
         ->orderBy('tbl_sea_shipment.etd')
         ->get();
@@ -428,6 +429,7 @@ class ShipmentController extends Controller
         $id_sea_shipment = $request->id;
         $seaShipment = SeaShipment::where('id_sea_shipment', $id_sea_shipment)->firstOrFail();
         $holdState = State::where('name', 'HOLD')->first();
+        $seaShipmentLinesAll = SeaShipmentLine::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->orderBy('marking')->get();
         $seaShipmentLines = SeaShipmentLine::where('id_sea_shipment', $seaShipment->id_sea_shipment)
         ->where(function($query) use ($holdState) {
             $query->where('id_state', '!=', $holdState->id_state)
@@ -435,10 +437,44 @@ class ShipmentController extends Controller
         })->orderBy('date')->orderBy('marking')->get();
         $seaShipmentBill = SeaShipmentBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->get();
 
+        $totalCbm1OverallCal = 0;
+        $totalCbm2OverallCal = 0;
+        $totalWeightOverallCal = 0;
+        $groupSeaShipmentLinesCal = $seaShipmentLines->groupBy(function ($item) {
+            return $item->date;
+        })->map(function ($group) use (&$totalCbm1OverallCal, &$totalCbm2OverallCal, &$totalWeightOverallCal) {
+            $totals = [
+                'total_qty_pkgs' => $group->filter(function ($item) {
+                    return is_numeric($item->qty_pkgs);
+                })->sum('qty_pkgs'),
+                'total_qty_loose' => $group->filter(function ($item) {
+                    return is_numeric($item->qty_loose);
+                })->sum('qty_loose'),
+                'total_weight' => $group->filter(function ($item) {
+                    return is_numeric($item->weight);
+                })->sum('weight'),
+                'total_cbm1' => $group->filter(function ($item) {
+                    return is_numeric($item->tot_cbm_1);
+                })->sum('tot_cbm_1'),
+                'total_cbm2' => $group->filter(function ($item) {
+                    return is_numeric($item->tot_cbm_2);
+                })->sum('tot_cbm_2')
+            ];
+            $totalWeightOverallCal += $totals['total_weight'];
+            $totalCbm1OverallCal += $totals['total_cbm1'];
+            $totalCbm2OverallCal += $totals['total_cbm2'];
+        
+            $totals['cbm_difference'] = $totals['total_cbm1'] - $totals['total_cbm2'];
+            return $totals;
+        });
+
         $customer = Customer::where('id_customer', $seaShipment->id_customer)->firstOrFail();
         $shipper = Shipper::where('id_shipper', $seaShipment->id_shipper)->first();
         $company = Company::where('id_company', $request->id_company)->first();
         $descsData = Desc::orderBy('name')->get();
+        $uomsData = Uom::orderBy('name')->get();
+        $ship = Ship::where('id_ship', $seaShipment->id_ship)->first();
+        $statesData = State::orderBy('name')->get();
         $account = $request->id_account ? Account::where('id_account', $request->id_account)->first() : null;
         $banker = $request->id_banker ? Banker::where('id_banker', $request->id_banker)->first() : null;
         $origin = Origin::where('id_origin', $seaShipment->id_origin)->first();
@@ -1043,10 +1079,13 @@ class ShipmentController extends Controller
             $pdf = PDF::loadView('pdf.generate_invoice', [
                 'customer' => $customer,
                 'shipper' => $shipper,
+                'ship' => $ship,
                 'seaShipment' => $seaShipment,
                 'seaShipmentLines' => $seaShipmentLines,
+                'seaShipmentLinesAll' => $seaShipmentLinesAll,
                 'seaShipmentBill' => $seaShipmentBill,
                 'groupSeaShipmentLines' => $groupSeaShipmentLines,
+                'groupSeaShipmentLinesCal' => $groupSeaShipmentLinesCal,
                 'groupedSeaShipmentLinesDate' => $groupedSeaShipmentLinesDate,
                 'allTotalAmount' => $totalAmountOverall + $totalAmountUnit,
                 'allTotalAmountDisc' => $totalAmountOverallDisc + $totalAmountUnit,
@@ -1065,7 +1104,9 @@ class ShipmentController extends Controller
                 'inv_type' => $inv_type,
                 'dataBill' => $dataBill,
                 'dataAnotherBill' => $dataAnotherBill,
-                'descsData' => $descsData
+                'descsData' => $descsData,
+                'statesData' => $statesData,
+                'uomsData' => $uomsData
             ])->setPaper('folio', 'portrait');
 
             // after print create data to bill recap
@@ -1155,17 +1196,35 @@ class ShipmentController extends Controller
                 }
 
                 // Output merge PDF
-                return response()->streamDownload(function () use ($mpdf, $customer, $shipper, $invNumber, $company, $monthRoman, $year) {
-                    echo $mpdf->Output('', 'S');
-                }, $customer->name . '-' . $shipper->name . '-' . $invNumber . '_' . $company->shorter . '_' . 'INV_' . $monthRoman . '_' . $year . '.pdf');
+                // return response()->streamDownload(function () use ($mpdf, $customer, $shipper, $invNumber, $company, $monthRoman, $year) {
+                //     echo $mpdf->Output('', 'S');
+                // }, $customer->name . '-' . $shipper->name . '-' . $invNumber . '_' . $company->shorter . '_' . 'INV_' . $monthRoman . '_' . $year . '.pdf');
+
+                // Output merge PDF menggunakan mode I
+                $mpdf->Output($customer->name . '-' . $shipper->name . '-' . $invNumber . '_' . $company->shorter . '_' . 'INV_' . $monthRoman . '_' . $year . '.pdf', 'I');
 
             } else {
-                return $pdf->download($customer->name . '-' . $shipper->name . '-' . $invNumber . '_' . $company->shorter . '_' . 'INV_' . $monthRoman . '_' . $year . '.pdf');
+                // return $pdf->download($customer->name . '-' . $shipper->name . '-' . $invNumber . '_' . $company->shorter . '_' . 'INV_' . $monthRoman . '_' . $year . '.pdf');
+                return $pdf->stream($customer->name . '-' . $shipper->name . '-' . $invNumber . '_' . $company->shorter . '_' . 'INV_' . $monthRoman . '_' . $year . '.pdf');
             }
         }
 
         if ($request->is_update) {
             return redirect()->back();
         }
+    }
+
+    public function deleteFile($encryptedId) {
+        // Dekripsi ID
+        $id = Crypt::decrypt($encryptedId);
+        $seaShipment = SeaShipment::findOrFail($id);
+        if ($seaShipment->file_shipment_status) {
+            // Hapus file dari storage
+            Storage::delete('public/' . $seaShipment->file_shipment_status);
+            $seaShipment->file_shipment_status = null;
+            $seaShipment->save();
+            return redirect()->back()->with('success', 'File has been deleted successfully.');
+        }
+        return redirect()->back()->with('error', 'No file found to delete.');
     }
 }

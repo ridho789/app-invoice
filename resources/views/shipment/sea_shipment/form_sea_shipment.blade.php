@@ -365,6 +365,9 @@
                                         <a href="{{ asset('storage/' . $seaShipment->file_shipment_status) }}" target="_blank">
                                             <span style="font-size: 14.5px;">{{ $seaShipment->file_shipment_status }}</span>
                                         </a>
+                                        <a class="ms-2" href="javascript:void(0);" onclick="confirmDeleteFile('{{ Crypt::encrypt($seaShipment->id_sea_shipment) }}')">
+                                            <i class="material-icons text-primary position-relative text-lg">delete</i>
+                                        </a>
                                     </li>
                                 </ul>
                             @else
@@ -1356,6 +1359,23 @@
                 window.location.href = deleteUrl;
             }
         });
+    }
+
+    function confirmDeleteFile(encryptedId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Redirect to delete route with the encrypted ID
+                window.location.href = '/sea_shipment/delete-file/' + encryptedId;
+            }
+        })
     }
 
     $('.select-cust').change(function() {

@@ -933,5 +933,284 @@
                 <div style="page-break-after: always;"></div>
             @endif
         @endfor
+        <!-- Shipment Status -->
+        <style>
+            .header-table {
+                font-weight: bold;
+                text-align: center;
+                text-decoration: underline;
+            }
+        </style>
+        <div style="page-break-before: always;">
+            <table style="border: 1px solid #000; width: 100%; border-collapse: collapse;">
+                <tr>
+                    <td colspan="6" class="header-table">SHIPMENT STATUS SEA FREIGHT</td>
+                </tr>
+                <tr><td colspan="6" style="height: 35px;"></td></tr>
+                <tr style="border-top: 1px solid #000;">
+                    <td>Shipper</td>
+                    <td>: {{ $shipper->name }}</td>
+                    <td style="border-left: 1px solid #000;">No.</td>
+                    <td></td>
+                    <td width=10% colspan="2" style="text-align: end;">
+                        Tgl {{ \Carbon\Carbon::createFromFormat('Y-m-d', $seaShipment->date)->format('d M Y') }}
+                    </td>
+                </tr>
+                <tr style="border-top: 1px solid #000;">
+                    <td>Consigne</td>
+                    <td>: {{ $customer->name }}</td>
+                    <td style="border-left: 1px solid #000;">Nama Kapal</td>
+                    <td colspan="3">: {{ $ship->name ?? null }}</td>
+                </tr>
+                <tr style="border-top: 1px solid #000;">
+                    <td>Total Jml Ship / BL</td>
+                    <td>: {{ $groupSeaShipmentLinesCal->count() }}</td>
+                    <td style="border-left: 1px solid #000;">Total Weight</td>
+                    <td>: {{ $groupSeaShipmentLinesCal->pluck('total_weight')->sum() }} Kgs</td>
+                    <td width=10% colspan="2" style="text-align: end;">
+                        Etd: {{ \Carbon\Carbon::createFromFormat('Y-m-d', $seaShipment->etd)->format('d M Y') }}
+                    </td>
+                </tr>
+                <tr style="border-top: 1px solid #000;">
+                    <td>Total Jml Pkgs</td>
+                    <td>: {{ $totalQty }} Pkgs</td>
+                    <td style="border-left: 1px solid #000;">Total Volume</td>
+                    <td>: {{ round($groupSeaShipmentLinesCal->pluck('total_cbm2')->sum(), 3) }} Cbm</td>
+                    <td width=10% colspan="2" style="text-align: end;">
+                        Eta: {{ \Carbon\Carbon::createFromFormat('Y-m-d', $seaShipment->eta)->format('d M Y') }}
+                    </td>
+                </tr>
+            </table>
+            <table style="border: 1px solid #000;">
+                <thead>
+                    <tr>
+                        <th rowspan="2">No.</th>
+                        <th rowspan="2">Tgl. BL</th>
+                        <th rowspan="2">Jml <br> Pkgs</th>
+                        <th rowspan="2">Weight <br> Kgs</th>
+                        <th colspan="3">Total Cbm</th>
+                        <th colspan="3">Charges Details</th>
+                        <th rowspan="2">Keterangan</th>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #000; text-align: center;">I</td>
+                        <td style="border: 1px solid #000; text-align: center;">II</td>
+                        <td style="border: 1px solid #000; text-align: center;">SF</td>
+                        <td style="border: 1px solid #000; text-align: center;">SF Exp</td>
+                        <td style="border: 1px solid #000; text-align: center;">SIN-BTM</td>
+                        <td style="border: 1px solid #000; text-align: center;">Add C/</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($groupSeaShipmentLinesCal as $date => $gsl)
+                    <tr>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">
+                            {{ $loop->iteration }}.
+                        </td>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">
+                            {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d M Y') }}
+                        </td>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none; ">
+                            {{ $gsl['total_qty_pkgs'] }}
+                        </td>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">
+                            @php
+                                $totalWeight = $gsl['total_weight'] / 1000;
+                            @endphp
+                            {{ $totalWeight != 0 ? $totalWeight . ' T' : '-' }}
+                        </td>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">
+                            {{ $gsl['total_cbm1'] > 0 ? round($gsl['total_cbm1'], 3) . ' M3' : '-' }}
+                        </td>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">
+                            {{ $gsl['total_cbm2'] > 0 ? round($gsl['total_cbm2'], 3) . ' M3' : '-' }}
+                        </td>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">
+                            {{ $gsl['cbm_difference'] > 0 ? round($gsl['cbm_difference'], 3) . ' M3' : '-' }}
+                        </td>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">-</td>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">-</td>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">-</td>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">-</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            @php
+                $previousDate = null;
+                $rowCount = 0;
+                $currentPage = 1;
+            @endphp
+            <table style="border: 1px solid #000;">
+                <thead>
+                    <tr>
+                        <th rowspan="2">No.</th>
+                        <th rowspan="2">Code</th>
+                        <th rowspan="2">Marking</th>
+                        <th colspan="4">Quantity</th>
+                        <th rowspan="2">Weight <br> Kg</th>
+                        <th colspan="3">Dimensi</th>
+                        <th colspan="2">Total Cbm</th>
+                        <th rowspan="2">Desc</th>
+                        <th rowspan="2">Keterangan</th>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border: 1px solid #000; text-align: center;">Pkgs</td>
+                        <td colspan="2" style="border: 1px solid #000; text-align: center;">Loose</td>
+                        <td style="border: 1px solid #000; text-align: center;">P</td>
+                        <td style="border: 1px solid #000; text-align: center;">L</td>
+                        <td style="border: 1px solid #000; text-align: center;">T</td>
+                        <td style="border: 1px solid #000; text-align: center;">I</td>
+                        <td style="border: 1px solid #000; text-align: center;">II</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($seaShipmentLinesAll as $ssl)
+                    @php
+                        $currentDate = $ssl->date;
+                        $checkUomPkgs = $uomsData->where('id_uom', $ssl->id_uom_pkgs)->first();
+                        $checkUomLoose = $uomsData->where('id_uom', $ssl->id_uom_loose)->first();
+                        if ($currentPage == 1 && $rowCount >= 23) {
+                            echo '</tbody></table>'; // Menutup tabel saat ini
+                            echo '<div style="page-break-after: always;"></div>'; // Menambahkan pemisah halaman
+                            echo '<table style="border: 1px solid #000;"><thead>'; // Membuka tabel baru
+                            // Menyalin header tabel
+                            echo '<tr>
+                                    <th rowspan="2">No.</th>
+                                    <th rowspan="2">Code</th>
+                                    <th rowspan="2">Marking</th>
+                                    <th colspan="4">Quantity</th>
+                                    <th rowspan="2">Weight <br> Kg</th>
+                                    <th colspan="3">Dimensi</th>
+                                    <th colspan="2">Total Cbm</th>
+                                    <th rowspan="2">Desc</th>
+                                    <th rowspan="2">Keterangan</th>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="border: 1px solid #000; text-align: center;">Pkgs</td>
+                                    <td colspan="2" style="border: 1px solid #000; text-align: center;">Loose</td>
+                                    <td style="border: 1px solid #000; text-align: center;">P</td>
+                                    <td style="border: 1px solid #000; text-align: center;">L</td>
+                                    <td style="border: 1px solid #000; text-align: center;">T</td>
+                                    <td style="border: 1px solid #000; text-align: center;">I</td>
+                                    <td style="border: 1px solid #000; text-align: center;">II</td>
+                                </tr>';
+                            echo '</thead><tbody>'; // Menutup header dan membuka body baru
+                            $rowCount = 0; // Reset rowCount untuk halaman baru
+                            $currentPage++; // Increment halaman saat ini
+                        } elseif ($currentPage > 1 && $rowCount >= 40) {
+                            echo '</tbody></table>'; // Menutup tabel saat ini
+                            echo '<div style="page-break-after: always;"></div>'; // Menambahkan pemisah halaman
+                            echo '<table style="border: 1px solid #000;"><thead>'; // Membuka tabel baru
+                            // Menyalin header tabel
+                            echo '<tr>
+                                    <th rowspan="2">No.</th>
+                                    <th rowspan="2">Code</th>
+                                    <th rowspan="2">Marking</th>
+                                    <th colspan="4">Quantity</th>
+                                    <th rowspan="2">Weight <br> Kg</th>
+                                    <th colspan="3">Dimensi</th>
+                                    <th colspan="2">Total Cbm</th>
+                                    <th rowspan="2">Desc</th>
+                                    <th rowspan="2">Keterangan</th>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="border: 1px solid #000; text-align: center;">Pkgs</td>
+                                    <td colspan="2" style="border: 1px solid #000; text-align: center;">Loose</td>
+                                    <td style="border: 1px solid #000; text-align: center;">P</td>
+                                    <td style="border: 1px solid #000; text-align: center;">L</td>
+                                    <td style="border: 1px solid #000; text-align: center;">T</td>
+                                    <td style="border: 1px solid #000; text-align: center;">I</td>
+                                    <td style="border: 1px solid #000; text-align: center;">II</td>
+                                </tr>';
+                            echo '</thead><tbody>'; // Menutup header dan membuka body baru
+                            $rowCount = 0; // Reset rowCount untuk halaman baru
+                            $currentPage++; // Increment halaman saat ini
+                        }
+                    @endphp
+                    @if($previousDate !== $currentDate)
+                        @php
+                            $specificDateData = $groupSeaShipmentLinesCal->filter(function ($value, $date) use ($currentDate) {
+                                return $date === $currentDate;
+                            });
+                        @endphp
+                        <tr style="border: 1px solid #000; background-color: #f0f0f0; font-weight: bold; text-align: center;">
+                            <td colspan="3">
+                                {{ \Carbon\Carbon::createFromFormat('Y-m-d', $currentDate)->format('d M Y') }}
+                            </td>
+                            <td colspan="2">{{ $specificDateData->first()['total_qty_pkgs'] }} {{ $checkUomPkgs->name ?? '' }}</td>
+                            <td colspan="2">{{ $specificDateData->first()['total_qty_loose'] }} {{ $checkUomLoose->name ?? '' }}</td>
+                            <td colspan="4"></td>
+                            <td>{{ round($specificDateData->first()['total_cbm1'], 3) }}</td>
+                            <td>{{ round($specificDateData->first()['total_cbm2'], 3) }}</td>
+                            <td colspan="2"></td>
+                        </tr>
+                        @php
+                            $previousDate = $currentDate;
+                        @endphp
+                    @endif
+                    
+                    <tr style="font-size: 11px;">
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">
+                            {{ $loop->iteration }}.
+                        </td>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">
+                            {{ $ssl->code ?? '' }}
+                        </td>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">
+                            {{ $ssl->marking ?? '' }}
+                        </td>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">
+                            {{ $ssl->qty_pkgs ?? '' }}
+                        </td>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">
+                            {{ $checkUomPkgs->name ?? '' }}
+                        </td>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">
+                            {{ $ssl->qty_loose ?? '' }}
+                        </td>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">
+                            {{ $checkUomLoose->name ?? '' }}
+                        </td>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">
+                            {{ $ssl->weight ?? '' }}
+                        </td>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">
+                            {{ $ssl->dimension_p ?? '' }}
+                        </td>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">
+                            {{ $ssl->dimension_l ?? '' }}
+                        </td>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">
+                            {{ $ssl->dimension_t ?? '' }}
+                        </td>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">
+                            {{ isset($ssl->tot_cbm_1) && $ssl->tot_cbm_1 !== null ? round($ssl->tot_cbm_1, 3) : '' }}
+                        </td>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">
+                            {{ isset($ssl->tot_cbm_2) && $ssl->tot_cbm_2 !== null ? round($ssl->tot_cbm_2, 3) : '' }}
+                        </td>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">
+                            {{ $ssl->lts ?? '' }}
+                        </td>
+                        <td style="text-align: center; border: 1px solid #000; border-top: none; border-bottom: none;">
+                            @php
+                                $description = $ssl->desc ?? '';
+                                $stateName = $statesData->where('id_state', $ssl->id_state)->first();
+                                if ($stateName) {
+                                    $description .= ' ' . $stateName->name;
+                                }
+                            @endphp
+                            {{ $description }}
+                        </td>
+                    </tr>
+                    @php
+                        $rowCount++;
+                    @endphp
+                    
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </body>
 </html>
