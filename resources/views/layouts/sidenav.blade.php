@@ -46,70 +46,80 @@
                         <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">Main</h6>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->is('account') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/account') }}">
-                            <span class="sidenav-mini-icon"> A </span>
-                            <span class="nav-link-text ms-1">Accounts</span>
+                        <a class="nav-link text-white collapsed" data-bs-toggle="collapse" href="#masterDataMenu" aria-expanded="false">
+                            <span class="sidenav-mini-icon"> MD </span>
+                            <span class="nav-link-text ms-1">Master Data</span>
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->is('banker') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/banker') }}">
-                            <span class="sidenav-mini-icon"> B </span>
-                            <span class="nav-link-text ms-1">Bankers</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->is('company') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/company') }}">
-                            <span class="sidenav-mini-icon"> Co </span>
-                            <span class="nav-link-text ms-1">Companies</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->is('customer') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/customer') }}">
-                            <span class="sidenav-mini-icon"> Cu </span>
-                            <span class="nav-link-text ms-1">Customers</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->is('desc') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/desc') }}">
-                            <span class="sidenav-mini-icon"> D </span>
-                            <span class="nav-link-text ms-1">Descs</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->is('origin') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/origin') }}">
-                            <span class="sidenav-mini-icon"> O </span>
-                            <span class="nav-link-text ms-1">Origins</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->is('ship') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/ship') }}">
-                            <span class="sidenav-mini-icon"> S </span>
-                            <span class="nav-link-text ms-1">Ships</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->is('shipper') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/shipper') }}">
-                            <span class="sidenav-mini-icon"> Sh </span>
-                            <span class="nav-link-text ms-1">Shippers</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->is('state') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/state') }}">
-                            <span class="sidenav-mini-icon"> St </span>
-                            <span class="nav-link-text ms-1">States</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->is('unit') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/unit') }}">
-                            <span class="sidenav-mini-icon"> U </span>
-                            <span class="nav-link-text ms-1">Units</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->is('uom') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/uom') }}">
-                            <span class="sidenav-mini-icon"> Uo </span>
-                            <span class="nav-link-text ms-1">UOM</span>
-                        </a>
+                        <div class="collapse" id="masterDataMenu">
+                            <ul class="nav ms-4">
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ request()->is('account') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/account') }}">
+                                        <span class="sidenav-mini-icon"> A </span>
+                                        <span class="nav-link-text ms-1">Accounts</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ request()->is('banker') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/banker') }}">
+                                        <span class="sidenav-mini-icon"> B </span>
+                                        <span class="nav-link-text ms-1">Bankers</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ request()->is('company') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/company') }}">
+                                        <span class="sidenav-mini-icon"> Co </span>
+                                        <span class="nav-link-text ms-1">Companies</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ request()->is('customer') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/customer') }}">
+                                        <span class="sidenav-mini-icon"> Cu </span>
+                                        <span class="nav-link-text ms-1">Customers</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ request()->is('desc') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/desc') }}">
+                                        <span class="sidenav-mini-icon"> D </span>
+                                        <span class="nav-link-text ms-1">Descs</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ request()->is('origin') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/origin') }}">
+                                        <span class="sidenav-mini-icon"> O </span>
+                                        <span class="nav-link-text ms-1">Origins</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ request()->is('ship') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/ship') }}">
+                                        <span class="sidenav-mini-icon"> S </span>
+                                        <span class="nav-link-text ms-1">Ships</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ request()->is('shipper') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/shipper') }}">
+                                        <span class="sidenav-mini-icon"> Sh </span>
+                                        <span class="nav-link-text ms-1">Shippers</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ request()->is('state') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/state') }}">
+                                        <span class="sidenav-mini-icon"> St </span>
+                                        <span class="nav-link-text ms-1">States</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ request()->is('unit') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/unit') }}">
+                                        <span class="sidenav-mini-icon"> U </span>
+                                        <span class="nav-link-text ms-1">Units</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ request()->is('uom') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/uom') }}">
+                                        <span class="sidenav-mini-icon"> Uo </span>
+                                        <span class="nav-link-text ms-1">UOM</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
 
                     <li class="nav-item">
@@ -175,70 +185,80 @@
                         <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">Main</h6>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->is('account') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/account') }}">
-                            <span class="sidenav-mini-icon"> A </span>
-                            <span class="nav-link-text ms-1">Accounts</span>
+                        <a class="nav-link text-white collapsed" data-bs-toggle="collapse" href="#masterDataMenu" aria-expanded="false">
+                            <span class="sidenav-mini-icon"> MD </span>
+                            <span class="nav-link-text ms-1">Master Data</span>
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->is('banker') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/banker') }}">
-                            <span class="sidenav-mini-icon"> B </span>
-                            <span class="nav-link-text ms-1">Bankers</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->is('company') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/company') }}">
-                            <span class="sidenav-mini-icon"> Co </span>
-                            <span class="nav-link-text ms-1">Companies</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->is('customer') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/customer') }}">
-                            <span class="sidenav-mini-icon"> Cu </span>
-                            <span class="nav-link-text ms-1">Customers</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->is('desc') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/desc') }}">
-                            <span class="sidenav-mini-icon"> D </span>
-                            <span class="nav-link-text ms-1">Descs</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->is('origin') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/origin') }}">
-                            <span class="sidenav-mini-icon"> O </span>
-                            <span class="nav-link-text ms-1">Origins</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->is('ship') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/ship') }}">
-                            <span class="sidenav-mini-icon"> S </span>
-                            <span class="nav-link-text ms-1">Ships</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->is('shipper') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/shipper') }}">
-                            <span class="sidenav-mini-icon"> Sh </span>
-                            <span class="nav-link-text ms-1">Shippers</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->is('state') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/state') }}">
-                            <span class="sidenav-mini-icon"> St </span>
-                            <span class="nav-link-text ms-1">States</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->is('unit') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/unit') }}">
-                            <span class="sidenav-mini-icon"> U </span>
-                            <span class="nav-link-text ms-1">Units</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->is('uom') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/uom') }}">
-                            <span class="sidenav-mini-icon"> Uo </span>
-                            <span class="nav-link-text ms-1">UOM</span>
-                        </a>
+                        <div class="collapse" id="masterDataMenu">
+                            <ul class="nav ms-4">
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ request()->is('account') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/account') }}">
+                                        <span class="sidenav-mini-icon"> A </span>
+                                        <span class="nav-link-text ms-1">Accounts</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ request()->is('banker') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/banker') }}">
+                                        <span class="sidenav-mini-icon"> B </span>
+                                        <span class="nav-link-text ms-1">Bankers</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ request()->is('company') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/company') }}">
+                                        <span class="sidenav-mini-icon"> Co </span>
+                                        <span class="nav-link-text ms-1">Companies</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ request()->is('customer') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/customer') }}">
+                                        <span class="sidenav-mini-icon"> Cu </span>
+                                        <span class="nav-link-text ms-1">Customers</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ request()->is('desc') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/desc') }}">
+                                        <span class="sidenav-mini-icon"> D </span>
+                                        <span class="nav-link-text ms-1">Descs</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ request()->is('origin') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/origin') }}">
+                                        <span class="sidenav-mini-icon"> O </span>
+                                        <span class="nav-link-text ms-1">Origins</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ request()->is('ship') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/ship') }}">
+                                        <span class="sidenav-mini-icon"> S </span>
+                                        <span class="nav-link-text ms-1">Ships</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ request()->is('shipper') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/shipper') }}">
+                                        <span class="sidenav-mini-icon"> Sh </span>
+                                        <span class="nav-link-text ms-1">Shippers</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ request()->is('state') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/state') }}">
+                                        <span class="sidenav-mini-icon"> St </span>
+                                        <span class="nav-link-text ms-1">States</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ request()->is('unit') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/unit') }}">
+                                        <span class="sidenav-mini-icon"> U </span>
+                                        <span class="nav-link-text ms-1">Units</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ request()->is('uom') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/uom') }}">
+                                        <span class="sidenav-mini-icon"> Uo </span>
+                                        <span class="nav-link-text ms-1">UOM</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
 
                     <li class="nav-item">
