@@ -21,11 +21,10 @@ return new class extends Migration
             $table->unsignedBigInteger('id_unit')->nullable();
             $table->foreign('id_unit')->references('id_unit')->on('tbl_units');
 
-            $table->date('date')->nullable();
             $table->string('marking')->nullable();
             $table->string('koli')->nullable();
-            $table->string('qty_pkgs')->nullable();
-            $table->string('qty_loose')->nullable();
+            $table->string('ctn')->nullable();
+            $table->string('kg')->nullable();
             $table->string('qty')->nullable();
             $table->string('note')->nullable();
                         

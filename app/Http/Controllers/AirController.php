@@ -63,7 +63,6 @@ class AirController extends Controller
 
     public function storeAirShipment(Request $request)
     {
-        // dd($request);
         $customer = Customer::where('id_customer', $request->id_customer)->first();
         $shipperIds = $customer->shipper_ids;
         $shipperIdsArray = explode(",", $shipperIds);
@@ -76,31 +75,31 @@ class AirController extends Controller
     
         $dataAirShipment = [
             'date' => $request->date,
+            'bl' => $request->bl,
             'id_customer' => $request->id_customer,
             'id_shipper' => $request->id_shipper,
             'id_origin' => strtoupper($request->id_origin),
             'vessel_sin' => strtoupper($request->vessel_sin),
         ];
     
-        $checkAirShipment = AirShipment::where('id_customer', $request->id_customer)->where('id_shipper', $request->id_shipper)->where('id_origin', $request->id_origin)->first();
+        $checkAirShipment = AirShipment::where('id_customer', $request->id_customer)->where('id_shipper', $request->id_shipper)->where('id_origin', $request->id_origin)
+            ->where('date', $request->date)->where('bl', $request->bl)->first();
     
         if (!$checkAirShipment) {
 
             $createdAirShipment = AirShipment::create($dataAirShipment);
             $airShipmentId = $createdAirShipment->id_air_shipment;
     
-            foreach ($request->bldate as $index => $bldate) {
+            foreach ($request->marking as $index => $marking) {
                 $dataAirShipmentLine = [
                     'id_air_shipment' => $airShipmentId,
-                    'date' => $bldate,
-                    'marking' => strtoupper($request->marking[$index]),
+                    'marking' => strtoupper($marking),
                     'koli' => $request->koli[$index],
-                    'qty_pkgs' => $request->qty_pkgs[$index],
-                    'qty_loose' => $request->qty_loose[$index],
+                    'ctn' => $request->ctn[$index],
+                    'kg' => $request->kg[$index],
                     'qty' => $request->qty[$index],
                     'unit' => $request->unit[$index],
                     'note' => $request->note[$index],
-                    // 'desc' => strtoupper($request->desc[$index]),
                 ];
     
                 AirShipmentLine::create($dataAirShipmentLine);
@@ -124,11 +123,10 @@ class AirController extends Controller
         $id = Crypt::decrypt($id);
 
         $airShipment = AirShipment::where('id_air_shipment', $id)->first();
-        $airShipmentLines = AirShipmentLine::where('id_air_shipment', $airShipment->id_air_shipment)->orderBy('date')->orderBy('id_air_shipment_line')->get();
+        $airShipmentLines = AirShipmentLine::where('id_air_shipment', $airShipment->id_air_shipment)->orderBy('marking')->orderBy('id_air_shipment_line')->get();
         $airShipmentAnotherBill = AirShipmentAnotherBill::where('id_air_shipment', $airShipment->id_air_shipment)->orderBy('date')->get();
         $origins = Origin::orderBy('name')->get();
         $originName = Origin::pluck('name', 'id_origin');
-
 
         $totalqtyOverall = 0;
 
@@ -145,7 +143,6 @@ class AirController extends Controller
                 })->sum('qty_loose')
             ];
 
-
             return $totals;
         });
 
@@ -155,11 +152,11 @@ class AirController extends Controller
         $shippers = Shipper::orderBy('name')->get();
         $companies = Company::orderBy('name')->get();
         $descs = Desc::orderBy('name')->get();
-
+        $units = Unit::orderBy('name')->get();
 
         // Mengirim data ke view
         return view('shipment.air_shipment.form_air_shipment', compact('airShipment','airShipmentLines','customers', 'customer', 'shippers', 'companies', 
-        'groupAirShipmentLines', 'descs', 'totalqtyOverall', 'airShipmentAnotherBill','origins', 'originName'));
+        'groupAirShipmentLines', 'descs', 'units', 'totalqtyOverall', 'airShipmentAnotherBill','origins', 'originName'));
     }
  
     public function updateAirShipment(Request $request) 
@@ -179,6 +176,7 @@ class AirController extends Controller
 
         if ($AirShipment) {
             $AirShipment->date = $request->date;
+            $AirShipment->bl = $request->bl;
             $AirShipment->id_customer = $request->id_customer;
             $AirShipment->id_shipper = $request->id_shipper;
             $AirShipment->id_origin = $request->id_origin;
@@ -211,11 +209,10 @@ class AirController extends Controller
         
             $data = [
                 'id_air_shipment' => $request->id_air_shipment,
-                'date' => $request->bldate[$index],
                 'marking' => strtoupper($request->marking[$index]),
                 'koli' =>$request->koli[$index],
-                'qty_pkgs' => $request->qty_pkgs[$index],
-                'qty_loose' => $request->qty_loose[$index],
+                'ctn' => $request->ctn[$index],
+                'kg' => $request->kg[$index],
                 'qty' => $request->qty[$index],
                 'unit' => $request->unit[$index],
                 'note' => $request->note[$index],

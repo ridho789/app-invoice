@@ -13,6 +13,7 @@ use App\Models\Ship;
 use App\Models\AirShipment;
 use App\Models\AirShipmentLine;
 use App\Models\Origin;
+use App\Models\Unit;
 
 class AirShipmentImport implements ToCollection
 {
@@ -68,8 +69,21 @@ class AirShipmentImport implements ToCollection
                     $IdOrigin = $checkOrigin->id_origin;
                 }
 
+                // Unit
+                $IdUnit = null;
+                if ($row[6]) {
+                    $checkUnit = Unit::where('name', 'like', '%' . $row[6] . '%')->first();
+                    if (!$checkUnit) {
+                        $checkUnit = Unit::create(['name' => strtoupper($row[6])]);
+                    }
+
+                    // IdUnit
+                    $IdUnit = $checkUnit->id_unit;
+                }
+
                 // Membuat nilai unik untuk mengecek keberadaan air shipment
-                $valueKey =  $IdShipper . \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[6])->format('Y-m-d') .$IdCustomer;
+                $valueKey =  $IdShipper . \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[5])->format('Y-m-d') . $IdCustomer 
+                . \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[6])->format('Y-m-d') . $IdOrigin;
 
                 // Cek apakah air shipment sudah ada
                 if (!$existingShipment || $existingShipment->value_key !== $valueKey) {
@@ -82,6 +96,7 @@ class AirShipmentImport implements ToCollection
                             'id_origin' => $IdOrigin,
                             'vessel_sin' => strtoupper($row[4]),
                             'date' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[5]),
+                            'bl' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[6]),
                             'id_shipper' => $IdShipper,
                             'id_customer' => $IdCustomer,
                             'value_key' => $valueKey
@@ -99,13 +114,12 @@ class AirShipmentImport implements ToCollection
                 // Buat atau tambahkan data ke tbl_air_shipment_line
                 $dataShipmentLine = [
                     'id_air_shipment' => $existingShipment->id_air_shipment ,
-                    'date' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[6]),
                     'marking' => strtoupper($row[7]),
                     'koli' => is_numeric($row[8]) ? floatval($row[8]) : null,
-                    'qty_pkgs' => is_numeric($row[9]) ? floatval($row[9]) : null,
-                    'qty_loose' => is_numeric($row[10]) ? floatval($row[10]) : null,
+                    'ctn' => is_numeric($row[9]) ? floatval($row[9]) : null,
+                    'kg' => is_numeric($row[10]) ? floatval($row[10]) : null,
                     'qty' => is_numeric($row[11]) ? floatval($row[11]) : null,
-                    'unit' => strtoupper($row[12]),
+                    'unit' => $IdUnit,
                     'note' => strtoupper($row[13]),
 
                 ];

@@ -18,11 +18,10 @@ class AirShipmentLine extends Model
         'id_history',
         'id_air_shipment',
         'id_unit',
-        'date',
         'marking',
         'koli',
-        'qty_pkgs',
-        'qty_loose',
+        'ctn',
+        'kg',
         'qty',
         'note',
     ];

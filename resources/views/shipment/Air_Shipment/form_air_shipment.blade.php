@@ -4,55 +4,6 @@
 <div class="container-fluid py-4" >
     <div class="row" >
         <div>
-            @if ($groupAirShipmentLines)
-            <!-- <div class="card mb-5">
-                <div class="card-header pb-2">
-                    <h6> Summary of Air Freight Shipment </h6>
-                    <p class="text-sm mb-0">
-                        Summary of Air Freight shipment.
-                    </p>
-                </div>
-                <div class="card-body px-4 pt-0 pb-0 mb-3">
-                    <div class="table-responsive">
-                        <table class="table align-items-center mb-0">
-                            <thead>
-                                <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">No.</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">BL Date</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Total CTN</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Total KG</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($groupAirShipmentLines as $date => $gsl)
-                                    <tr>
-                                        <td width=5%>
-                                            <div class="d-flex px-3 py-1">
-                                                <p class="text-xs text-secondary mb-0">{{ $loop->iteration }}.</p>
-                                            </div>
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            <span class="text-secondary text-xs font-weight-normal">{{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M-y') }}</span>
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            <span class="text-secondary text-xs font-weight-normal">{{ $gsl['total_qty_pkgs'] }}</span>
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            <span class="text-secondary text-xs font-weight-normal">{{ $gsl['total_qty_loose'] }}</span>
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            <span class="text-secondary text-xs font-weight-normal">-</span>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div> -->
-            @endif
-
             <div class="card mt-0 p-0">
                 <div class="card-header p-3 pt-2">
                     <div class="icon icon-lg icon-shape bg-gradient-dark shadow text-center border-radius-xl mt-n4 me-3 float-start">
@@ -72,12 +23,14 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">BL</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Customer</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipper</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Origin</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Vessel SIN</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Ctn</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Kg</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Qty</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -88,6 +41,9 @@
                                                 <input type="date" class="form-control" name="date" value="{{ $airShipment->date }}">
                                             </div>
                                         </td>
+                                        <td class="align-middle text-center">
+                                                <input type="date" class="form-control text-center" value="{{ $airShipment->bl }}" name="bl" style="border: 0px;" required>
+                                            </td>
                                         <td class="align-middle text-center">
                                             <select class="form-select text-xs select-cust" name="id_customer" required>
                                                 <option value="">...</option>
@@ -123,13 +79,17 @@
                                                 <option value="" {{ old('vessel_sin', $airShipment->vessel_sin) == '' ? 'selected' : '' }}>...</option>
                                                 <option value="NARITA/CNG" {{ old('vessel_sin', $airShipment->vessel_sin) == 'NARITA/CNG' ? 'selected' : '' }}> NARITA / CNG </option>
                                             </select> -->
-                                            <input type="text" class="form-control text-center" name="vessel_sin" value="{{ $airShipment->vessel_sin }}" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center" name="vessel_sin" 
+                                            oninput="this.value = this.value.toUpperCase()" value="{{ $airShipment->vessel_sin }}" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="tot_pkgs" placeholder="..." style="background-color: #fff;" disabled>
+                                            <input type="text" class="form-control text-center" name="tot_ctn" placeholder="..." style="background-color: #fff;" disabled>
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="tot_loose" placeholder="..." style="background-color: #fff;" disabled>
+                                            <input type="text" class="form-control text-center" name="tot_kg" placeholder="..." style="background-color: #fff;" disabled>
+                                        </td>
+                                        <td class="align-middle text-center" width=5%>
+                                            <input type="text" class="form-control text-center" name="tot_qty" placeholder="..." style="background-color: #fff;" disabled>
                                         </td>
                                 </tbody>
                             </table>
@@ -143,15 +103,16 @@
                             <table class="table table-bordered align-items-center mb-0">
                                 <thead>
                                     <tr>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">No.</th>
-                                        <!-- <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">BL Date</th> -->
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Marking</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Koli</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">CTN</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">KG</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Qty</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Unit</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Note</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No.</th>
+                                        <!-- <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">BL Date</th> -->
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Marking</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Koli</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">CTN</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">KG</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Qty</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Unit</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Note</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"></th>
                                     </tr>
 
                                 </thead>
@@ -177,11 +138,11 @@
                                         </td>
                                         <!-- qty -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center" name="qty_pkgs[]" value="{{ $asl->qty_pkgs }}" 
+                                            <input type="number" class="form-control text-center" name="ctn[]" value="{{ $asl->ctn }}" 
                                             placeholder="..." style="border: 0px;" min="1">
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center" name="qty_loose[]" value="{{ $asl->qty_loose }}" 
+                                            <input type="number" class="form-control text-center" name="kg[]" value="{{ $asl->kg }}" 
                                             placeholder="..." style="border: 0px;" min="1">
                                         </td>
                                         <td class="align-middle text-center" width=5%>
@@ -189,19 +150,27 @@
                                             placeholder="..." style="border: 0px;" min="1">
                                         </td>
                                         <td class="align-middle" width=5%>
-                                            <select class="form-select text-center text-xs" name="unit[]" style="border: 0px;">
+                                            <!-- <select class="form-select text-center text-xs" name="unit[]" style="border: 0px;">
                                                 <option value="" {{ old('unit', $asl->unit) == '' ? 'selected' : '' }}>-</option>
                                                 <option value="PCS" {{ old('unit', $asl->unit) == 'PCS' ? 'selected' : '' }}>PCS</option>
                                                 <option value="CSE" {{ old('unit', $asl->unit) == 'CSE' ? 'selected' : '' }}>CSE</option>
                                                 <option value="CTN" {{ old('unit', $asl->unit) == 'CTN' ? 'selected' : '' }}>CTN</option>
                                                 <option value="PKG" {{ old('unit', $asl->unit) == 'PKG' ? 'selected' : '' }}>PKG</option>
                                                 <option value="PLT" {{ old('unit', $asl->unit) == 'PLT' ? 'selected' : '' }}>PLT</option>
+                                            </select> -->
+                                            <select class="form-select text-center text-xs select-unit" name="unit[]" style="border: 0px;">
+                                                <option value="">...</option>
+                                                @foreach ($units as $u)
+                                                    <option value="{{ $u->id_unit }}" 
+                                                        {{ old('id_unit', $asl->id_unit) == $u->id_unit ? 'selected' : '' }}>{{ $u->name }}
+                                                    </option>
+                                                @endforeach
                                             </select>
                                         </td>
-                                        <td class="align-middle text-center" width=12%>
+                                        <td class="align-middle text-center">
                                             <input type="text" class="form-control text-center" name="note[]" value="{{ $asl->note }}" placeholder="..." style="border: 0px;">
                                         </td>
-                                        <td class="align-middle text-center" width=2%>
+                                        <td class="align-middle text-center" width=3%>
                                             <a href="javascript:void(0);" onclick="confirmShipmentLineDelete({{ $asl->id_air_shipment_line }}, {{ $loop->iteration }})">
                                                 <i class="material-icons text-primary position-relative text-lg">delete</i>
                                             </a>
@@ -218,19 +187,17 @@
                                 <span class="btn-inner--text"><u>+</u> Add new line</span>
                             </button>
                         </div>
-                        
+
                         <!-- Upload shipment status -->
-                        <div class="d-flex justify-content-center input-group input-group-dynamic mb-3">
-                            <div>
-                                <label for="files" class="drop-container" id="dropcontainer" >
-                                    <span class="drop-title">Drop file here</span>
-                                    or
-                                    <input type="file" id="files" name="file_shipment_status" accept="application/pdf">
-                                </label>
-                            </div>
+                        <div>
+                            <label for="files" class="drop-container" id="dropcontainer" style="margin-left: 0;">
+                                <span class="drop-title">Drop file here</span>
+                                or
+                                <input type="file" id="files" name="file_shipment_status" accept="application/pdf">
+                            </label>
                         </div>
-                        
-                        <div class="mt-3 mb-3" style="margin-left: 0.01cm;">
+
+                        <div class="mt-3 mb-3">
                             <span style="font-size: 15.5px; color: #444; font-weight: bold;">Uploaded File</span>
                             @if ($airShipment->file_shipment_status)
                                 <ul>
@@ -246,12 +213,12 @@
                             @else
                                 <p style="font-size: 14.5px;">No file uploaded yet.</p>
                             @endif
-                            <div>
-                                <button type="submit" class="btn btn-primary btn-sm">Update</button>
-                                <button type="button" class="btn btn-secondary btn-sm ms-2 btn-setup" id="mbtn" data-toggle="modal" data-target="#setPrintModal"> Setup</button>
-                            </div>
                         </div>
-                        
+
+                        <div>
+                            <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                            <button type="button" class="btn btn-secondary btn-sm ms-2 btn-setup" id="mbtn" data-toggle="modal" data-target="#setPrintModal"> Setup</button>
+                        </div>
                     </form>
                     @else
                     <div class="card-body px-4 pt-0 pb-0">
@@ -268,7 +235,8 @@
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Origin</th>
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Vessel SIN</th>
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Ctn</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Kg</th>    
+                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Kg</th>
+                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Qty</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -308,14 +276,18 @@
                                                     <option value="">...</option>
                                                     <option value="NARITA/CNG"> NARITA / CNG </option>
                                                 </select> -->
-                                                <input type="text" class="form-control text-center" name="vessel_sin" placeholder="..." style="border: 0px;">
+                                                <input type="text" class="form-control text-center" name="vessel_sin" 
+                                                oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;">
                                             </td>
                                             <td class="align-middle text-center" width=5%>
-                                                <input type="text" class="form-control text-center" name="tot_pkgs" placeholder="..." style="background-color: #fff;" disabled>
+                                                <input type="text" class="form-control text-center" name="tot_ctn" placeholder="..." style="background-color: #fff;" disabled>
                                             </td>
                                             <td class="align-middle text-center" width=5%>
-                                                <input type="text" class="form-control text-center" name="tot_loose" placeholder="..." style="background-color: #fff;" disabled>
-                                            </td>    
+                                                <input type="text" class="form-control text-center" name="tot_kg" placeholder="..." style="background-color: #fff;" disabled>
+                                            </td>
+                                            <td class="align-middle text-center" width=5%>
+                                                <input type="text" class="form-control text-center" name="tot_qty" placeholder="..." style="background-color: #fff;" disabled>
+                                            </td>  
                                         </tr>
                                     </tbody>
                                 </table>
@@ -325,15 +297,16 @@
                                 <table class="table table-bordered align-items-center mb-0">
                                     <thead>
                                         <tr>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">No.</th>
-                                            <!-- <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">BL Date</th> -->
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Marking</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Koli</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">CTN</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">KG</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Qty</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Unit</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Note</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No.</th>
+                                            <!-- <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">BL Date</th> -->
+                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Marking</th>
+                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Koli</th>
+                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">CTN</th>
+                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">KG</th>
+                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Qty</th>
+                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Unit</th>
+                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Note</th>
+                                            <th width="3%" class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"></th>    
                                         </tr>
                                     </thead>
                                     <tbody id="shipmentTableBody">
@@ -354,10 +327,10 @@
                                                 <input type="number" class="form-control text-center" name="koli[]" placeholder="..." style="border: 0px;" min="1">
                                             </td>
                                             <td class="align-middle text-center" width=5%>
-                                                <input type="number" class="form-control text-center" name="qty_pkgs[]" placeholder="..." style="border: 0px;" min="1">
+                                                <input type="number" class="form-control text-center" name="ctn[]" placeholder="..." style="border: 0px;" min="1">
                                             </td>
                                             <td class="align-middle text-center" width=5%>
-                                                <input type="number" class="form-control text-center" name="qty_loose[]" placeholder="..." style="border: 0px;" min="1">
+                                                <input type="number" class="form-control text-center" name="kg[]" placeholder="..." style="border: 0px;" min="1">
                                             </td>
                                             <td class="align-middle text-center" width=5%>
                                                 <input type="number" class="form-control text-center" name="qty[]" placeholder="..." style="border: 0px;" min="1">
@@ -371,14 +344,14 @@
                                                     <option value="PKG">PKG</option>
                                                     <option value="PLT">PLT</option>
                                                 </select> -->
-                                                <select class="form-select text-xs select-unit" name="unit[]">
+                                                <select class="form-select text-center text-xs select-unit" name="unit[]" style="border: 0px;">
                                                     <option value="">...</option>
                                                     @foreach ($units as $u)
                                                         <option value="{{ $u->id_unit }}">{{ $u->name }}</option>
                                                     @endforeach
                                                 </select>
                                             </td>
-                                            <td class="align-middle text-center" width=col-16%>
+                                            <td class="align-middle text-center">
                                                 <input type="text" class="form-control text-center" name="note[]" placeholder="..." style="border: 0px;">
                                             </td>    
                                         </tr>
@@ -404,7 +377,7 @@
 </div>
 
 
-{{--  <!-- The Modal -->  --}}
+<!-- The Modal -->
 @if ($airShipment)
     <div class="container">    
         <div id="setPrintModal" class="modal">
@@ -474,6 +447,7 @@
                             <div id="inputGroupContainer" class="input-group input-group-static">
                                 @php
                                     $checkAirShipmentAnotherBill = null;
+                                    $date = $airShipment->bl;
                                     if (isset($airShipmentAnotherBill) && count($airShipmentAnotherBill) > 0) {
                                         $checkAirShipmentAnotherBill = $airShipmentAnotherBill->where('date', $date)->all();
                                     }
@@ -509,12 +483,10 @@
                                         </div>
                                     @endforeach
                                 @endif
-                                {{--  <p>{{ $date }}</p>  --}}
-
                             </div>
                         </div>
 
-                        {{--  <!-- Template for input another bill -->  --}}
+                        <!-- Template for input another bill -->
                         <template id="inputGroupTemplate">
                             <input type="hidden" name="idAnotherBill[]" value="">
                             <input type="hidden" name="dateAnotherBL[]" value="{{ $date }}">
@@ -553,12 +525,6 @@
 @endif
 
 <style>
-    .flex-container {
-        display: flex;
-        justify-content: center;
-        width: 100%; 
-    }
-
     .drop-container {
         position: relative;
         display: flex;
@@ -567,16 +533,13 @@
         justify-content: center;
         align-items: center;
         height: 150px;
-        flex-grow: 1;
-        width: 81vw;
-        min-width: 780px; 
-        max-width: 1550px; 
+        width: 100%;
+        padding: 20px;
         border-radius: 10px;
         border: 1.5px dashed #555;
         color: #444;
         cursor: pointer;
         transition: background .2s ease-in-out, border .2s ease-in-out;
-        box-sizing: border-box;
     }
 
     .drop-container:hover {
@@ -633,14 +596,12 @@
     }
 </style>
 
-
 <script>
     // select2
     $(document).ready(function() {
         $('.select-cust').select2();
         $('.select-shipper').select2();
         $('.select-origin').select2();
-        $('.select-unit').select2();
     });
 
     function confirmShipmentLineDelete(id, number) {
@@ -661,19 +622,27 @@
     }
 
     function addEventListenersToNewRow(row) {
-        var qtyPkgsInput = row.querySelector('input[name="qty_pkgs[]"]');
-        if (qtyPkgsInput) {
-            qtyPkgsInput.addEventListener('change', function() {
-                // Update total packages
-                calculateTotalPackages();
+        var ctnInput = row.querySelector('input[name="ctn[]"]');
+        if (ctnInput) {
+            ctnInput.addEventListener('change', function() {
+                // Update total ctn
+                calculateTotalCTN();
             });
         }
 
-        var qtyLooseInput = row.querySelector('input[name="qty_loose[]"]');
-        if (qtyLooseInput) {
-            qtyLooseInput.addEventListener('change', function() {
-                // Update total loose
-                calculateTotalLoose();
+        var kgInput = row.querySelector('input[name="kg[]"]');
+        if (kgInput) {
+            kgInput.addEventListener('change', function() {
+                // Update total kg
+                calculateTotalKG();
+            });
+        }
+
+        var qtyInput = row.querySelector('input[name="qty[]"]');
+        if (qtyInput) {
+            qtyInput.addEventListener('change', function() {
+                // Update total qty
+                calculateTotalQTY();
             });
         }
     }
@@ -687,10 +656,7 @@
         newRow.innerHTML = `
         <input type="hidden" name="id_air_shipment_line[]" value="">
         <td class="align-middle text-center text-sm" width="2%">
-            <div class="d-flex px-3 py-1">${rowCount}.</div>
-        </td>
-        <td class="align-middle text-center" width="6%">
-            <input type="date" class="form-control text-center" name="bldate[]" value="" style="border: 0px;" required>
+            <div class="d-flex px-3 py-1 row-number">${rowCount}.</div>
         </td>
         <td class="align-middle text-center" width=15%>
             <input type="text" class="form-control text-center" name="marking[]" oninput="this.value = this.value.toUpperCase()"
@@ -700,25 +666,23 @@
             <input type="number" class="form-control text-center" name="koli[]" placeholder="..." style="border: 0px;" min="1">
         </td>
         <td class="align-middle text-center" width=5%>
-            <input type="number" class="form-control text-center" name="qty_pkgs[]" placeholder="..." style="border: 0px;" min="1">
+            <input type="number" class="form-control text-center" name="ctn[]" placeholder="..." style="border: 0px;" min="1">
         </td>
         <td class="align-middle text-center" width=5%>
-            <input type="number" class="form-control text-center" name="qty_loose[]" placeholder="..." style="border: 0px;" min="1">
+            <input type="number" class="form-control text-center" name="kg[]" placeholder="..." style="border: 0px;" min="1">
         </td>
         <td class="align-middle text-center" width=5%>
             <input type="number" class="form-control text-center" name="qty[]" placeholder="..." style="border: 0px;" min="1">
         </td>
         <td class="align-middle" width=5%>
-            <select class="form-select text-center text-xs" name="unit[]" style="border: 0px;">
+            <select class="form-select text-center text-xs select-unit" name="unit[]" style="border: 0px;">
                 <option value="">...</option>
-                <option value="PCS">PCS</option>
-                <option value="CSE">CSE</option>
-                <option value="CTN">CTN</option>
-                <option value="PKG">PKG</option>
-                <option value="PLT">PLT</option>
+                @foreach ($units as $u)
+                    <option value="{{ $u->id_unit }}">{{ $u->name }}</option>
+                @endforeach
             </select>
         </td>
-        <td class="align-middle text-center" width=col-16%>
+        <td class="align-middle text-center">
             <input type="text" class="form-control text-center" name="note[]" placeholder="..." style="border: 0px;">
         </td>
         <td class="align-middle text-center">
@@ -732,15 +696,19 @@
     
         // Update row numbers for all rows
         updateRowNumbers();
+
+        document.querySelectorAll('input[name="ctn[]"]').forEach(function(input) {
+            input.addEventListener('input', calculateTotalCTN); 
+        });
+
+        document.querySelectorAll('input[name="kg[]"]').forEach(function(input) {
+            input.addEventListener('input', calculateTotalKG); 
+        });
+
+        document.querySelectorAll('input[name="qty[]"]').forEach(function(input) {
+            input.addEventListener('input', calculateTotalQTY); 
+        });
         
-    
-        // Add event listeners to the new row inputs
-        addEventListenersToNewRow(newRow);
-    
-        // Update totals initially
-        calculateTotalPackages();
-        calculateTotalLoose();
-    
         function updateRowNumbers() {
             const rows = document.querySelectorAll('#shipmentTableBody tr');
             rows.forEach((row, index) => {
@@ -752,6 +720,40 @@
         }
 
     });
+
+    // Confirm to delete shipment line
+    function confirmNewShipmentLineDelete(element) {
+        const row = element.closest('tr');
+        const rowNumber = row.querySelector('.row-number').textContent.trim().replace('.', '');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You sure you want to delete row number ' + rowNumber + '?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const row = element.closest('tr');
+                row.remove();
+                updateRowNumbers();
+                calculateTotalCTN();
+                calculateTotalKG();
+                calculateTotalQTY();
+            }
+        });
+    }
+
+    function updateRowNumbers() {
+        const rows = document.querySelectorAll('#shipmentTableBody tr');
+        rows.forEach((row, index) => {
+            const numberCell = row.querySelector('.row-number');
+            if (numberCell) {
+                numberCell.innerText = `${index + 1}.`;
+            }
+        });
+    }
     
     //MODAL / POP UP
     var modal = $('#setPrintModal');
@@ -773,32 +775,32 @@
 
     // Drag or Drop File
     document.addEventListener('DOMContentLoaded', (event) => {
-    let dropContainer = document.getElementById('dropcontainer');
-    let fileInput = document.getElementById('files');
+        let dropContainer = document.getElementById('dropcontainer');
+        let fileInput = document.getElementById('files');
 
-    if (dropContainer) {
-        dropContainer.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            dropContainer.classList.add('dragover');
-        });
+        if (dropContainer) {
+            dropContainer.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropContainer.classList.add('dragover');
+            });
 
-        dropContainer.addEventListener('dragleave', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            dropContainer.classList.remove('dragover');
-        });
+            dropContainer.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropContainer.classList.remove('dragover');
+            });
 
-        dropContainer.addEventListener('drop', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            dropContainer.classList.remove('dragover');
+            dropContainer.addEventListener('drop', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropContainer.classList.remove('dragover');
 
-            if (e.dataTransfer.files.length) {
-                fileInput.files = e.dataTransfer.files;
-            }
-        });
-    }
+                if (e.dataTransfer.files.length) {
+                    fileInput.files = e.dataTransfer.files;
+                }
+            });
+        }
     });
 
     // Form 
@@ -873,46 +875,65 @@
         }
     });
 
-   // Fungsi untuk menghitung total paket
-    function calculateTotalPackages() {
-        var totalPackages = 0;
-        var rows = document.querySelectorAll('input[name="qty_pkgs[]"]');
+    // Fungsi untuk menghitung total CTN
+    function calculateTotalCTN() {
+        var totalCTN = 0;
+        var rows = document.querySelectorAll('input[name="ctn[]"]');
 
         rows.forEach(function(row) {
             if (row.value.trim() !== '') {
-                totalPackages += parseInt(row.value) || 0; 
+                totalCTN += parseInt(row.value) || 0; 
             }
         });
 
-        document.querySelector('input[name="tot_pkgs"]').value = totalPackages;
+        document.querySelector('input[name="tot_ctn"]').value = totalCTN;
     }
 
-    document.querySelectorAll('input[name="qty_pkgs[]"]').forEach(function(input) {
-        input.addEventListener('input', calculateTotalPackages); 
+    document.querySelectorAll('input[name="ctn[]"]').forEach(function(input) {
+        input.addEventListener('input', calculateTotalCTN); 
     });
 
-    calculateTotalPackages();
+    calculateTotalCTN();
 
+    // function to calculate total KG
+    function calculateTotalKG() {
+        var totalKG = 0;
+        var rows = document.querySelectorAll('input[name="kg[]"]');
 
-   // function to calculate tot_loose
-   function calculateTotalLoose() {
-    var totalLoose = 0;
-    var rows = document.querySelectorAll('input[name="qty_loose[]"]');
+        rows.forEach(function(row) {
+            if (row.value.trim() !== '') {
+                totalKG += parseInt(row.value) || 0; 
+            }
+        });
 
-    rows.forEach(function(row) {
-        if (row.value.trim() !== '') {
-            totalLoose += parseInt(row.value) || 0; 
+            document.querySelector('input[name="tot_kg"]').value = totalKG;
         }
+
+        document.querySelectorAll('input[name="kg[]"]').forEach(function(input) {
+            input.addEventListener('input', calculateTotalKG); 
     });
 
-        document.querySelector('input[name="tot_loose"]').value = totalLoose;
-    }
+    calculateTotalKG();
 
-    document.querySelectorAll('input[name="qty_loose[]"]').forEach(function(input) {
-        input.addEventListener('input', calculateTotalLoose); 
+    // function to calculate total QTY
+    function calculateTotalQTY() {
+        var totalQTY = 0;
+        var rows = document.querySelectorAll('input[name="qty[]"]');
+
+        rows.forEach(function(row) {
+            if (row.value.trim() !== '') {
+                totalQTY += parseInt(row.value) || 0; 
+            }
+        });
+
+            document.querySelector('input[name="tot_qty"]').value = totalQTY;
+        }
+
+        document.querySelectorAll('input[name="qty[]"]').forEach(function(input) {
+            input.addEventListener('input', calculateTotalQTY); 
     });
 
-    calculateTotalLoose();
+    calculateTotalQTY();
 
     //function to confirm delete file upload
     function confirmDeleteFile(encryptedId) {
