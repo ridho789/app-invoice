@@ -913,40 +913,10 @@ class ShipmentController extends Controller
 
         $paymentDue = $shipmentDate->format('Y-m-d');
 
-        if ($company->shorter == 'KPN') {
-            $imagePath = public_path('asset/assets/img/KOP/KPN.png');
+        if ($company) {
+            $imagePath = public_path($company->letterhead);
             $imageContent = file_get_contents($imagePath);
-            $companyName = 'PT KARYA PUTRA NATUNA';
-        }
-
-        if ($company->shorter == 'BMM') {
-            $imagePath = public_path('asset/assets/img/KOP/BMM.png');
-            $imageContent = file_get_contents($imagePath);
-            $companyName = 'PT BEVI MARGI MULYA';
-        }
-
-        if ($company->shorter == 'BMA') {
-            $imagePath = public_path('asset/assets/img/KOP/BMA.png');
-            $imageContent = file_get_contents($imagePath);
-            $companyName = 'PT BIEMAN MAKMUR ABADI';
-        }
-
-        if ($company->shorter == 'SMK') {
-            $imagePath = public_path('asset/assets/img/KOP/SMK.jpg');
-            $imageContent = file_get_contents($imagePath);
-            $companyName = 'PT SURYA MAKMUR KREASI';
-        }
-
-        if ($company->shorter == 'SMD') {
-            $imagePath = public_path('asset/assets/img/KOP/SMD.png');
-            $imageContent = file_get_contents($imagePath);
-            $companyName = 'SEMADI';
-        }
-
-        if ($company->shorter == 'SNM') {
-            $imagePath = public_path('asset/assets/img/KOP/SNM.jpg');
-            $imageContent = file_get_contents($imagePath);
-            $companyName = 'PT SETIA NEGARA MAJU';
+            $companyName = $company->name;
         }
 
         $dataBill = null;

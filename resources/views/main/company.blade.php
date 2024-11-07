@@ -38,7 +38,7 @@
                         </p>
                     </div>
                     <div class="card-body px-4 pt-0 pb-0">
-                        <form action="{{ url('company-store') }}" method="POST">
+                        <form action="{{ url('company-store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="row">
                                 <div class="col-lg-6 mb-4">
@@ -53,6 +53,22 @@
                                         <input type="text" name="shorter_company" class="form-control" oninput="this.value = this.value.toUpperCase()" required>
                                     </div>
                                 </div>
+
+                                <!-- letterhead -->
+                                <div class="col-lg-12 mb-4">
+                                    <div class="input-group input-group-static">
+                                        <label>Upload letterhead</label>
+                                        <input type="file" class="form-control" name="letterhead" accept=".png, .jpg, .jpeg" onchange="previewImageModal(event)" required/>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12 mb-4">
+                                    <div class="input-group input-group-static">
+                                        <!-- Preview -->
+                                        <img class="mt-2" id="image-preview" style="display:none; width: 500px; height: auto;" />
+                                    </div>
+                                </div>
+
                             </div>
                             <button type="submit" class="btn btn-primary btn-sm">Submit</button>
                         </form>
@@ -70,7 +86,7 @@
                         </p>
                     </div>
                     <div class="card-body px-4 pt-0 pb-0">
-                        <form action="{{ url('company-update') }}" method="POST">
+                        <form action="{{ url('company-update') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" id="edit-id" name="id">
                             <div class="row">
@@ -84,6 +100,20 @@
                                     <div class="input-group input-group-static">
                                         <label>Enter a shorter company name</label>
                                         <input type="text" name="shorter_company" id="edit-shorter-company" class="form-control" oninput="this.value = this.value.toUpperCase()" required>
+                                    </div>
+                                </div>
+                                <!-- letterhead -->
+                                <div class="col-lg-12 mb-4">
+                                    <div class="input-group input-group-static">
+                                        <label>Upload letterhead</label>
+                                        <input type="file" class="form-control" name="letterhead" accept=".png, .jpg, .jpeg" onchange="previewImageModal(event)"/>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12 mb-4">
+                                    <div class="input-group input-group-static">
+                                        <!-- Preview -->
+                                        <img class="mt-2" id="edit-image-preview" style="display:none; width: 500px; height: auto;" />
                                     </div>
                                 </div>
                             </div>
@@ -109,6 +139,7 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">#</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Company</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shorter</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Letterhead</th>
                                     <th class="text-center text-uppercase text-secondary"></th>
                                 </tr>
                             </thead>
@@ -127,6 +158,15 @@
                                     </td>
                                     <td class="shorter-company-selected align-middle text-center text-sm">
                                         <p class="text-sm font-weight-normal mb-0">{{ $c->shorter ?? '-' }}</p>
+                                    </td>
+                                    <td class="shorter-company-selected align-middle text-center text-sm">
+                                        @if(!empty($c->letterhead))
+                                        <a href="#" class="image-link" data-bs-toggle="modal" data-bs-target="#imageModal" data-image="{{ asset('storage/' . $c->letterhead) }}">
+                                            <img class="avatar-img rounded" src="{{ asset('storage/' . $c->letterhead) }}" alt="letterhead" style="width: 125px; height: auto;">
+                                        </a>
+                                        @else
+                                        -
+                                        @endif
                                     </td>
                                     <td class="text-end">
                                         <a href="#" class="mx-4 btn-edit-company" id="btn-edit-company">
@@ -161,11 +201,35 @@
         }
     }, 3500);
 
+    function previewImageModal(event) {
+        var input = event.target;
+        var reader = new FileReader();
+        
+        // Pilih semua elemen dengan id yang berbeda
+        var imgElements = document.querySelectorAll('#image-preview, #edit-image-preview');
+
+        reader.onload = function() {
+            imgElements.forEach(function(imgElement) {
+                imgElement.src = reader.result;
+                imgElement.style.display = 'block';
+            });
+        }
+
+        if (input.files && input.files[0]) {
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
         const toggleFormButton = document.getElementById('btn-new-company');
         const myForm = document.getElementById('form-new-company');
 
         toggleFormButton.addEventListener('click', function() {
+            // Clear image preview
+            var imgElement = document.getElementById('image-preview');
+            imgElement.style.display = 'none';
+            imgElement.src = '';
+            
             if (myForm.style.display === 'none') {
                 myForm.style.display = 'block';
             }
@@ -186,10 +250,20 @@
                 var id = row.getAttribute("data-id");
                 var company = row.querySelector(".name-company-selected").textContent;
                 var shorter_company = row.querySelector(".shorter-company-selected").textContent;
+                var imageUrl = row.querySelector(".image-link")?.getAttribute("data-image");
 
                 document.getElementById("edit-id").value = id;
                 document.getElementById("edit-company").value = company.trim();
                 document.getElementById("edit-shorter-company").value = shorter_company.trim();
+
+                var imgElement = document.getElementById('edit-image-preview');
+                if (imageUrl) {
+                    imgElement.src = imageUrl;
+                    imgElement.style.display = 'block';
+                } else {
+                    imgElement.style.display = 'none';
+                    imgElement.src = '';
+                }
 
                 if (myEditForm.style.display === 'none') {
                     myEditForm.style.display = 'block';

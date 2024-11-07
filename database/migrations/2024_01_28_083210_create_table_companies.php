@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('id_company');
             $table->unsignedBigInteger('id_history')->nullable();
             $table->string('name');
+            $table->string('letterhead')->nullable();
             $table->string('shorter');
             $table->timestamps();
         });
