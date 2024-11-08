@@ -34,7 +34,7 @@ class CasImport implements ToCollection
             // Shipper
             $IdShipper = null;
             if ($row[1]) {
-                $checkShipper = Shipper::where('name', 'like', '%' . $row[1] . '%')->first();
+                $checkShipper = Shipper::where('name', strtoupper($row[1]))->first();
                 if (empty($checkShipper)) {
                     $checkShipper = Shipper::create(['name' => strtoupper($row[1])]);
                 }
@@ -46,7 +46,7 @@ class CasImport implements ToCollection
             // Customer
             $IdCustomer = null;
             if ($row[0]) {
-                $checkCustomer = Customer::where('name', 'like', '%' . $row[0] . '%')->first();
+                $checkCustomer = Customer::where('name', strtoupper($row[0]))->first();
                 if (empty($checkCustomer)) {
                     $checkCustomer = Customer::create(['name' => strtoupper($row[0]), 'shipper_ids' => $IdShipper]);
                 }
@@ -65,7 +65,7 @@ class CasImport implements ToCollection
             // Origin
             $IdOrigin = null;
             if ($row[4]) {
-                $checkOrigin = Origin::where('name', 'like', '%' . $row[4] . '%')->first();
+                $checkOrigin = Origin::where('name', strtoupper($row[4]))->first();
                 if (empty($checkOrigin)) {
                     $checkOrigin = Origin::create(['name' => strtoupper($row[4])]);
                 }
@@ -77,7 +77,7 @@ class CasImport implements ToCollection
             // Unit
             $IdUnit = null;
             if ($row[5]) {
-                $checkUnit = Unit::where('name', 'like', '%' . $row[5] . '%')->first();
+                $checkUnit = Unit::where('name', strtoupper($row[5]))->first();
                 if (empty($checkUnit)) {
                     $checkUnit = Unit::create(['name' => strtoupper($row[5])]);
                 }

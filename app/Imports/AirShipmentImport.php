@@ -33,7 +33,7 @@ class AirShipmentImport implements ToCollection
 
                 // Shipper
                 if (!empty($row[2])) {
-                    $checkShipper = Shipper::where('name', 'like', '%' . $row[2] . '%')->first();
+                    $checkShipper = Shipper::where('name', strtoupper($row[2]))->first();
                     if (!$checkShipper) {
                         $checkShipper = Shipper::create(['name' => strtoupper($row[2])]);
                     }
@@ -43,7 +43,7 @@ class AirShipmentImport implements ToCollection
 
                 // Customer
                 if (!empty($row[1])) {
-                    $checkCustomer = Customer::where('name', 'like', '%' . $row[1] . '%')->first();
+                    $checkCustomer = Customer::where('name', strtoupper($row[1]))->first();
                     if (!$checkCustomer) {
                         $checkCustomer = Customer::create(['name' => strtoupper($row[1]), 'shipper_ids' => $IdShipper]);
                     }
@@ -60,7 +60,7 @@ class AirShipmentImport implements ToCollection
                 // Origin
                 $IdOrigin = null;
                 if ($row[6]) {
-                    $checkOrigin = Origin::where('name', 'like', '%' . $row[3] . '%')->first();
+                    $checkOrigin = Origin::where('name', strtoupper($row[3]))->first();
                     if (!$checkOrigin) {
                         $checkOrigin = Origin::create(['name' => strtoupper($row[3])]);
                     }
@@ -72,7 +72,7 @@ class AirShipmentImport implements ToCollection
                 // Unit
                 $IdUnit = null;
                 if ($row[6]) {
-                    $checkUnit = Unit::where('name', 'like', '%' . $row[6] . '%')->first();
+                    $checkUnit = Unit::where('name', strtoupper($row[6]))->first();
                     if (!$checkUnit) {
                         $checkUnit = Unit::create(['name' => strtoupper($row[6])]);
                     }
