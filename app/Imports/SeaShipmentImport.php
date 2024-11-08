@@ -87,7 +87,7 @@ class SeaShipmentSheetImport implements ToCollection
                 if ($rowNumber === 2) {
                     // Shipper
                     if ($row[4]) {
-                        $checkShipper = Shipper::where('name', 'like', '%' . $row[4] . '%')->first();
+                        $checkShipper = Shipper::where('name', strtoupper($row[4]))->first();
                         if (!$checkShipper) {
                             $checkShipper = Shipper::create(['name' => strtoupper($row[4])]);
                         }
@@ -98,7 +98,7 @@ class SeaShipmentSheetImport implements ToCollection
 
                     // Company
                     if ($row[13]) {
-                        $checkCompany = Company::where('name', 'like', '%' . $row[13] . '%')->first();
+                        $checkCompany = Company::where('name', strtoupper($row[13]))->first();
                         if (!$checkCompany) {
                             $checkCompany = Company::create(['name' => strtoupper($row[13])]);
                         }
@@ -109,7 +109,7 @@ class SeaShipmentSheetImport implements ToCollection
 
                     // Customer
                     if ($row[2]) {
-                        $checkCustomer = Customer::where('name', 'like', '%' . $row[2] . '%')->first();
+                        $checkCustomer = Customer::where('name', strtoupper($row[2]))->first();
                         if (!$checkCustomer) {
                             $checkCustomer = Customer::create(['name' => strtoupper($row[2]), 'shipper_ids' => $IdShipper, 'id_company' => $IdCompany]);
                         }
@@ -129,7 +129,7 @@ class SeaShipmentSheetImport implements ToCollection
                     // Ship
                     $IdShip = null;
                     if ($row[5]) {
-                        $checkShip = Ship::where('name', 'like', '%' . $row[5] . '%')->first();
+                        $checkShip = Ship::where('name', strtoupper($row[5]))->first();
                         if (!$checkShip) {
                             $checkShip = Ship::create(['name' => strtoupper($row[5])]);
                         }
@@ -141,7 +141,7 @@ class SeaShipmentSheetImport implements ToCollection
                     // Origin
                     $IdOrigin = null;
                     if ($row[6]) {
-                        $checkOrigin = Origin::where('name', 'like', '%' . $row[6] . '%')->first();
+                        $checkOrigin = Origin::where('name', strtoupper($row[6]))->first();
                         if (!$checkOrigin) {
                             $checkOrigin = Origin::create(['name' => strtoupper($row[6])]);
                         }
@@ -190,7 +190,7 @@ class SeaShipmentSheetImport implements ToCollection
                     // UOM Pkgs
                     $IdUomPkgs = null;
                     if ($row[6]) {
-                        $checkUomPkgs = Uom::where('name', 'like', '%' . $row[6] . '%')->first();
+                        $checkUomPkgs = Uom::where('name', strtoupper($row[6]))->first();
                         if (!$checkUomPkgs) {
                             $checkUomPkgs = Uom::create(['name' => strtoupper($row[6])]);
                         }
@@ -202,7 +202,7 @@ class SeaShipmentSheetImport implements ToCollection
                     // UOM Loose
                     $IdUomLoose = null;
                     if ($row[8]) {
-                        $checkUomLoose = Uom::where('name', 'like', '%' . $row[8] . '%')->first();
+                        $checkUomLoose = Uom::where('name', strtoupper($row[8]))->first();
                         if (!$checkUomLoose) {
                             $checkUomLoose = Uom::create(['name' => strtoupper($row[8])]);
                         }
@@ -226,7 +226,7 @@ class SeaShipmentSheetImport implements ToCollection
                     // State
                     $IdState = null;
                     if ($row[18]) {
-                        $checkState = State::where('name', 'like', '%' . $row[18] . '%')->first();
+                        $checkState = State::where('name', strtoupper($row[18]))->first();
                         if (!$checkState) {
                             $checkState = State::create(['name' => strtoupper($row[18])]);
                         }
